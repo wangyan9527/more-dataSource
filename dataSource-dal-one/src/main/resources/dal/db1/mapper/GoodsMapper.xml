@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dal.db1.mapper.GoodsMapper">
+    <resultMap id="BaseResultMap" type="dal.db1.entity.Goods">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="price" jdbcType="BIGINT" property="price"/>
+        <result column="is_del" jdbcType="TINYINT" property="idDel"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Base_Column_List">
+        id, `name`, price, is_del, create_time, update_time
+    </sql>
+
+    <insert id="insertOne" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into goods(name, price) values(#{name}, #{price})
+    </insert>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from goods
+        <where>
+            id=#{goodsId}
+        </where>
+    </select>
+
+    <select id="selectGoodsListByGoodsName" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from goods
+        <where>
+            <bind name="goodsNameQuery" value="'%' + goodsName + '%'"/>
+            goods_name like #{goodsNameQuery}
+        </where>
+    </select>
+
+    <select id="selectByIds" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from goods
+        <where>
+            <if test="goodsIds != null and goodsIds.size()>0">
+                ID in
+                <foreach collection="goodsIds" separator="," close=")" open="(" item="goodsId">
+                    #{goodsId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+</mapper>

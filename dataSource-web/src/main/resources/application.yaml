@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: jdbc
+    include: application-jdbc.yml
+
+#mybatis:
+#  config-location: classpath:mybatis-configuration.xml
+
