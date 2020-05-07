@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dal.db1.mapper.ExcelMapper">
+  <resultMap id="BaseResultMap" type="dal.db1.entity.ExcelTemp">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="BU_ID" jdbcType="BIGINT" property="buId" />
+    <result column="BRANCH_ID" jdbcType="BIGINT" property="branchId" />
+    <result column="CLASS_NO" jdbcType="VARCHAR" property="classNo" />
+    <result column="CLASS_NAME" jdbcType="VARCHAR" property="className" />
+    <result column="STAGE_ID" jdbcType="BIGINT" property="stageId" />
+    <result column="STAGE" jdbcType="VARCHAR" property="stage"/>
+    <result column="SUBJECT_ID" jdbcType="BIGINT" property="subjectId" />
+    <result column="SUBJECT" jdbcType="VARCHAR" property="subject"/>
+    <result column="staff_no" jdbcType="VARCHAR" property="staffNo" />
+    <result column="teacher_name" jdbcType="VARCHAR" property="teacherName"/>
+    <result column="STUDENT_NUM" jdbcType="INTEGER" property="studentNum" />
+    <result column="START_TIME" jdbcType="VARCHAR" property="startTime" />
+    <result column="END_TIME" jdbcType="VARCHAR" property="endTime" />
+    <result column="DURATION" jdbcType="VARCHAR" property="duration" />
+    <result column="QUIT_NUM" jdbcType="INTEGER" property="quitNum" />
+    <result column="ORDER_NO" jdbcType="VARCHAR" property="orderNo" />
+    <result column="SCORE" jdbcType="VARCHAR" property="score" />
+    <result column="ACCIDENT" jdbcType="VARCHAR" property="accident" />
+    <result column="QUIT_REASON" jdbcType="VARCHAR" property="quitReason" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    ID, BU_ID, BRANCH_ID, CLASS_NO, CLASS_NAME, STAGE_ID, SUBJECT_ID, staff_no,teacher_name, STUDENT_NUM,
+    START_TIME, END_TIME, DURATION, QUIT_NUM, ORDER_NO, SCORE, ACCIDENT, QUIT_REASON
+  </sql>
+  <delete id="deleteByFilter" parameterType="dal.db1.entity.ExcelCriteria">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    delete from excel
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+
+  <insert id="insertBatch">
+    insert into excel(FEED_BACK_ID, BU_ID, BRANCH_ID, CLASS_NO, CLASS_NAME, STAGE_ID, SUBJECT_ID, staff_no,teacher_name,
+    TEACHER_TYPE,STUDENT_NUM, START_TIME, END_TIME, DURATION, QUIT_NUM, ORDER_NO, SCORE, ACCIDENT, QUIT_REASON) values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.feedBackId}, #{item.buId}, #{item.branchId}, #{item.classNo}, #{item.className}, #{item.stageId},
+      #{item.subjectId},#{item.staffNo},#{item.teacherName}, #{item.teacherType}, #{item.studentNum}, #{item.startTime}, #{item.endTime}, #{item.duration},
+      #{item.quitNum},#{item.orderNo}, #{item.score}, #{item.accident}, #{item.quitReason})
+    </foreach>
+  </insert>
+
+  <resultMap id="stageMap" type="dal.db1.entity.Stage">
+    <id property="id" jdbcType="BIGINT" column="ID"/>
+    <result property="name" jdbcType="VARCHAR" column="name"/>
+  </resultMap>
+
+  <select id="queryStageList" resultMap="stageMap">
+    select ID, `NAME` from stage;
+  </select>
+
+  <select id="querySubjectList" resultType="dal.db1.entity.Subject">
+    select ID, `NAME` from subject;
+  </select>
+
+  <select id="queryStageId0" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from excel
+    <where>
+      STAGE_ID = 0
+    </where>
+  </select>
+
+  <insert id="insertBatchTemp">
+    insert into excel_temp(FEED_BACK_ID, BU_ID, BRANCH_ID, CLASS_NO, CLASS_NAME, STAGE_ID,STAGE,SUBJECT_ID, SUBJECT,staff_no,teacher_name,
+    TEACHER_TYPE,STUDENT_NUM, START_TIME, END_TIME, DURATION, QUIT_NUM, ORDER_NO, SCORE, ACCIDENT, QUIT_REASON) values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.feedBackId}, #{item.buId}, #{item.branchId}, #{item.classNo}, #{item.className}, #{item.stageId},#{item.stage},
+      #{item.subjectId} , #{item.subject}, #{item.staffNo},#{item.teacherName}, #{item.teacherType}, #{item.studentNum}, #{item.startTime}, #{item.endTime}, #{item.duration},
+      #{item.quitNum},#{item.orderNo}, #{item.score}, #{item.accident}, #{item.quitReason})
+    </foreach>
+  </insert>
+</mapper>

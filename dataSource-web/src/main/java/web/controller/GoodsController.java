@@ -21,6 +21,12 @@ public class GoodsController {
         return ResultUtils.buildResult(goodsService.insertGoods(reqDto));
     }
 
+    @RequestMapping("/testTransactional.json")
+    public Result testTransactional() {
+        goodsService.testTransactional();
+        return ResultUtils.buildResult();
+    }
+
 
 
 }

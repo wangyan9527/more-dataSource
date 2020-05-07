@@ -1,12 +1,17 @@
 spring:
   datasource:
     one:
-      jdbc-url: jdbc:mysql://localhost:3306/db1?useSSL=true&characterEncoding=utf8
+      jdbc-url: jdbc:mysql://localhost:3306/prod?useSSL=true&characterEncoding=utf8
       username: root
       password: root
       driver-class-name: com.mysql.jdbc.Driver
     two:
-      jdbc-url: jdbc:mysql://localhost:3306/db2?useSSL=true&characterEncoding=utf8
-      username: root
-      password: root
+      jdbc-url: jdbc:mysql://172.30.70.70:8066/paike?useSSL=true&characterEncoding=utf8
+      username: u_paike_read
+      password: pJ6i8J1p
+      driver-class-name: com.mysql.jdbc.Driver
+    three:
+      jdbc-url: jdbc:mysql://172.30.70.70:8066/order?useSSL=true&characterEncoding=utf8
+      username: u_order_read
+      password: LkOe1Gfe
       driver-class-name: com.mysql.jdbc.Driver

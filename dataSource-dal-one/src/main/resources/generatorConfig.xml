@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+	<context id="my_mysql_tables" targetRuntime="MyBatis3"
+		defaultModelType="flat">
+		<!-- 为sql关键字添加分隔符 -->
+		<property name="autoDelimitKeywords" value="true" />
+		<!-- beginningDelimiter和endingDelimiter：指明数据库的用于标记数据库对象名的符号，比如ORACLE就是双引号，MYSQL默认是`反引号； -->
+		<property name="beginningDelimiter" value="`" />
+		<property name="endingDelimiter" value="`" />
+
+		<plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+			<property name="mappers" value="tk.mybatis.mapper.common.Mapper" />
+			<!-- caseSensitive默认false，当数据库表名区分大小写时，可以将该属性设置为true -->
+			<property name="caseSensitive" value="false" />
+		</plugin>
+
+		<plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin">
+			<property name="searchString" value="Example$" />
+			<property name="replaceString" value="Criteria" />
+		</plugin>
+
+		<plugin
+			type="com.github.dcendents.mybatis.generator.plugin.rename.RenameExampleClassAndMethodsPlugin">
+			<property name="classMethodSearchString" value="Example" />
+			<property name="classMethodReplaceString" value="Filter" />
+			<property name="parameterSearchString" value="example" />
+			<property name="parameterReplaceString" value="filter" />
+		</plugin>
+
+		<commentGenerator>
+			<property name="suppressAllComments" value="true" />
+			<property name="suppressDate" value="true" />
+		</commentGenerator>
+
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/prod?characterEncoding=utf8&amp;useSSL=false"
+			userId="root" password="root">
+		</jdbcConnection>
+
+		<javaModelGenerator targetPackage="dal.db1.entity"
+			targetProject="src/main/java">
+			<property name="enableSubPackages" value="true" />
+		</javaModelGenerator>
+
+		<sqlMapGenerator targetPackage="dal.db1.mapper"
+			targetProject="src/main/resources">
+			<property name="enableDeleteByExample" value="false" />
+			<property name="enableCountByExample" value="false" />
+			<property name="enableUpdateByExample" value="false" />
+			<property name="enableSelectByExample" value="false" />
+			<property name="selectByExampleQueryId" value="false" />
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+
+
+		<javaClientGenerator targetPackage="dal.db1.mapper" targetProject="src/main/java" type="XMLMAPPER">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+
+		<!--<table  tableName="lesson_table" enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >-->
+			<!--<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>-->
+			<!--<ignoreColumn column="drc_check_time"/>-->
+		<!--</table>-->
+
+
+		<table  tableName="teacher_lesson" enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+			<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+			<ignoreColumn column="drc_check_time"/>
+		</table>
+
+
+<!--		<table  tableName="lesson_table_feedback" enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+			<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+			<ignoreColumn column="drc_check_time"/>
+		</table>
+
+		<table  tableName="lesson_table" enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+			<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+			<ignoreColumn column="drc_check_time"/>
+		</table>-->
+        <!--
+
+		 <table  tableName="CLASS_LESSON"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+
+		  <generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+            <ignoreColumn column="drc_check_time"/>
+        </table>
+        -->
+        <!--  <table  tableName="LESSON_TIME_DETAIL"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+		  <generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+            <ignoreColumn column="drc_check_time"/>
+        </table> -->
+		<!--  <table  tableName="LESSON_STUDENT"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+		  <generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+            <ignoreColumn column="drc_check_time"/>
+        </table>
+		 <table  tableName="LESSON_TEACHER"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+		 <generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+            <ignoreColumn column="drc_check_time"/>
+        </table> -->
+		<!-- 
+        <table  tableName="organization"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+            <generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+            <ignoreColumn column="drc_check_time"/>
+
+        </table>
+         -->
+        
+       <!--  <table tableName="CLASS_GOOD" enableCountByExample="false"
+			enableUpdateByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false">
+			<generatedKey column="id" sqlStatement="MYSQL"
+				identity="true" />
+		</table>
+		<table tableName="CLASS_LESSON" enableCountByExample="false"
+			enableUpdateByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false">
+
+			<generatedKey column="id" sqlStatement="MYSQL" identity="true" />
+			<ignoreColumn column="drc_check_time" />
+		</table>
+		<table tableName="class_stage_subject_assistant" enableCountByExample 
+			= "false" enableUpdateByExample = "false" enableSelectByExample = "false" 
+			selectByExampleQueryId = "false" > <generatedKey column="id" sqlStatement="MYSQL" 
+			identity="true"/> <ignoreColumn column="drc_check_time"/> </table> <table 
+			tableName="lesson_duration_cost" enableCountByExample = "false" enableUpdateByExample 
+			= "false" enableSelectByExample = "false" selectByExampleQueryId = "false" 
+			> <generatedKey column="id" sqlStatement="MYSQL" identity="true"/> <ignoreColumn 
+			column="drc_check_time"/> </table> -->
+		<!-- <table tableName="order_cost_record" enableCountByExample = "false" 
+			enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId 
+			= "false" > <generatedKey column="id" sqlStatement="MYSQL" identity="true"/> 
+			<ignoreColumn column="drc_check_time"/> </table> -->
+		<!-- <table tableName="CLASS_STAGE_SUBJECT_TEACHER" enableCountByExample 
+			= "false" enableUpdateByExample = "false" enableSelectByExample = "false" 
+			selectByExampleQueryId = "false" > <generatedKey column="id" sqlStatement="MYSQL" 
+			identity="true"/> <ignoreColumn column="drc_check_time"/> </table> -->
+		<!-- <table tableName="LESSON_TIME_DETAIL" enableCountByExample = "false" 
+			enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId 
+			= "false" > <generatedKey column="id" sqlStatement="MYSQL" identity="true"/> 
+			<ignoreColumn column="drc_check_time"/> </table> -->
+		<!-- <table tableName="LESSON_STUDENT" enableCountByExample = "false" enableUpdateByExample 
+			= "false" enableSelectByExample = "false" selectByExampleQueryId = "false" 
+			> <generatedKey column="id" sqlStatement="MYSQL" identity="true"/> <ignoreColumn 
+			column="drc_check_time"/> </table> <table tableName="LESSON_TEACHER" enableCountByExample 
+			= "false" enableUpdateByExample = "false" enableSelectByExample = "false" 
+			selectByExampleQueryId = "false" > <generatedKey column="id" sqlStatement="MYSQL" 
+			identity="true"/> <ignoreColumn column="drc_check_time"/> </table> -->
+		<!-- <table tableName="organization" enableCountByExample = "false" enableUpdateByExample 
+			= "false" enableSelectByExample = "false" selectByExampleQueryId = "false" 
+			> <generatedKey column="id" sqlStatement="MYSQL" identity="true"/> <ignoreColumn 
+			column="drc_check_time"/> </table> -->
+
+		<!-- <table tableName="CLASS_GOOD" enableCountByExample="false" enableUpdateByExample="false" 
+			enableSelectByExample="false" selectByExampleQueryId="false"> <generatedKey 
+			column="id" sqlStatement="MYSQL" identity="true" /> </table> <table tableName="CLASS_INFO" 
+			enableCountByExample="false" enableUpdateByExample="false" enableSelectByExample="false" 
+			selectByExampleQueryId="false"> <generatedKey column="id" sqlStatement="MYSQL" 
+			identity="true" /> </table> -->
+		<!-- <table tableName="PLACE" enableCountByExample="false" enableUpdateByExample="false" 
+			enableSelectByExample="false" selectByExampleQueryId="false"> <generatedKey 
+			column="id" sqlStatement="MYSQL" identity="true" /> <ignoreColumn column="drc_check_time" 
+			/> </table> -->
+		<!--
+		<table  tableName="class_lesson"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+			<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+            <ignoreColumn column="drc_check_time"/>
+        </table>
+        
+       	<table  tableName="class_stage"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+			<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+            <ignoreColumn column="drc_check_time"/>
+        </table>
+       	<table  tableName="class_stage_subject"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+		 	<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+            <ignoreColumn column="drc_check_time"/>
+        </table>
+        <table  tableName="class_stage_subject_teacher"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+			<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+            <ignoreColumn column="drc_check_time"/>
+        </table>
+        <table  tableName="lesson_teacher"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+			<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+            <ignoreColumn column="drc_check_time"/>
+        </table>
+        <table  tableName="lesson_student"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+			<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+            <ignoreColumn column="drc_check_time"/>
+        </table>    
+        -->
+
+        <!-- <table tableName="accident_lesson_student"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+			<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+        </table>
+
+        <table tableName="accident_lesson_time_detail"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+			<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+        </table> -->
+
+		<!-- <table tableName="sms_template"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+			<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+        </table>
+		<table tableName="sms_record"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+			<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+        </table> -->
+        <!--<table tableName="mq_message"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+        <table tableName="new_cost_order_stage"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+			<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+        </table>
+		<table tableName="command"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+			<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+		</table>-->
+		<!--<table tableName="order_version"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+			<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+		</table>-->
+		<!-- <table tableName="cost_order_stage"  enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >
+			<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+		</table> -->
+		<!--<table  tableName="survey_question" enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >-->
+			<!--<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>-->
+			<!--<ignoreColumn column="drc_check_time"/>-->
+		<!--</table>-->
+		<!--<table  tableName="student_survey_result" enableCountByExample = "false" enableUpdateByExample = "false" enableSelectByExample = "false" selectByExampleQueryId = "false" >-->
+			<!--<generatedKey column="id" sqlStatement="MYSQL" identity="true"/>-->
+			<!--<ignoreColumn column="drc_check_time"/>-->
+		<!--</table>-->
+	</context>
+</generatorConfiguration>

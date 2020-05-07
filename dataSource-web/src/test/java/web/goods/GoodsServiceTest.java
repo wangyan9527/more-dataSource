@@ -11,6 +11,7 @@ import sal.goods.dto.GoodsReqDto;
 import sal.order.OrderService;
 import web.WebApplication;
 
+import java.io.IOException;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -42,6 +43,16 @@ public class GoodsServiceTest {
     public void testQueryOrderByUser() {
         List<GoodsOrderDto> result = orderService.queryGoodsOrderListByUserName("炎");
         System.out.println(result);
+    }
+
+    @Test
+    public void testQueryAndInsert() throws IOException, InterruptedException {
+        goodsService.queryAndInsertPost();
+    }
+
+    @Test
+    public void testQueryAndInsertTeacher() throws InterruptedException {
+        goodsService.queryAndInsertTeacher();
     }
 
 

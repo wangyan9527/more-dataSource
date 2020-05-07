@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dal.db1.mapper.TeacherScoreRatioMapper">
+  <resultMap id="BaseResultMap" type="dal.db1.entity.TeacherScoreRatio">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="CSST_ID" jdbcType="BIGINT" property="csstId" />
+    <result column="FEEDBACK_NO" jdbcType="VARCHAR" property="feedbackNo" />
+    <result column="CLASS_ID" jdbcType="BIGINT" property="classId" />
+    <result column="CLASS_NO" jdbcType="VARCHAR" property="classNo" />
+    <result column="TEACHER_STAFF_NO" jdbcType="VARCHAR" property="teacherStaffNo" />
+    <result column="TEACHER_TYPE" jdbcType="TINYINT" property="teacherType" />
+    <result column="STAGE_ID" jdbcType="BIGINT" property="stageId" />
+    <result column="SUBJECT_ID" jdbcType="BIGINT" property="subjectId" />
+    <result column="BATCH_NUM" jdbcType="INTEGER" property="batchNum" />
+    <result column="BRANCH_ID" jdbcType="BIGINT" property="branchId" />
+    <result column="SUBSECTORS_ID" jdbcType="BIGINT" property="subsectorsId" />
+    <result column="COURSE_TYPE" jdbcType="TINYINT" property="courseType" />
+    <result column="BU_ID" jdbcType="BIGINT" property="buId" />
+    <result column="QUIT_NUM" jdbcType="INTEGER" property="quitNum"/>
+    <result column="EXAM_WAY" jdbcType="CHAR" property="examWay" />
+    <result column="EXAM_TYPE" jdbcType="VARCHAR" property="examType"/>
+    <result column="SCORE_RATIO" jdbcType="INTEGER" property="scoreRatio" />
+    <result column="SCORE" jdbcType="INTEGER" property="score" />
+    <result column="LESSON_DATE" jdbcType="TIMESTAMP" property="lessonDate" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="SURVEY_NUM" jdbcType="INTEGER" property="surveyNum"/>
+    <result column="REAL_NUM" jdbcType="INTEGER" property="realNum"/>
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    ID, CSST_ID, FEEDBACK_NO, CLASS_ID, CLASS_NO, TEACHER_STAFF_NO, TEACHER_TYPE, STAGE_ID, 
+    SUBJECT_ID, BATCH_NUM, BRANCH_ID, SUBSECTORS_ID, COURSE_TYPE, BU_ID,QUIT_NUM, EXAM_WAY, EXAM_TYPE, SCORE_RATIO,
+    SCORE, LESSON_DATE, CREATE_TIME, UPDATE_TIME, SURVEY_NUM, REAL_NUM
+  </sql>
+
+  <insert id="insertBatch">
+    insert into teacher_score_ratio(CSST_ID, FEEDBACK_NO, CLASS_ID, CLASS_NO, TEACHER_STAFF_NO, TEACHER_TYPE, STAGE_ID,
+    SUBJECT_ID, BATCH_NUM, BRANCH_ID, SUBSECTORS_ID, COURSE_TYPE, BU_ID,QUIT_NUM, EXAM_WAY, EXAM_TYPE, SCORE_RATIO,
+    SCORE, LESSON_DATE, SURVEY_NUM, REAL_NUM) values
+    <foreach collection="list" separator="," item="item">
+      (#{item.csstId}, #{item.feedbackNo}, #{item.classId}, #{item.classNo}, #{item.teacherStaffNo}, #{item.teacherType},
+      #{item.stageId}, #{item.subjectId}, #{item.batchNum}, #{item.branchId},
+      #{item.subsectorsId}, #{item.courseType}, #{item.buId}, #{item.quitNum}, #{item.examWay}, #{item.examType},
+      #{item.scoreRatio}, #{item.score}, #{item.lessonDate}, #{item.surveyNum}, #{item.realNum})
+    </foreach>
+  </insert>
+
+  <insert id="insertBatchSelect" >
+    insert into teacher_score_ratio(CSST_ID, FEEDBACK_NO, CLASS_ID, CLASS_NO, TEACHER_STAFF_NO, TEACHER_TYPE, STAGE_ID,
+    SUBJECT_ID, BATCH_NUM, BRANCH_ID, SUBSECTORS_ID, COURSE_TYPE, BU_ID, QUIT_NUM, EXAM_WAY, EXAM_TYPE, SCORE_RATIO,
+    SCORE, LESSON_DATE)
+    select csst.ID, fb.FEEDBACK_NO, ci.ID, ci.CLASS_NO, csst.TEACHER_STAFF_NO, csst.TEACHER_TYPE, csst.STAGE_ID, csst.SUBJECT_ID,
+    csst.BATCH_NUM, ci.BRANCH_ID, ci.SUBSECTORS_ID, ci.COURSE_TYPE, ci.BU_ID,
+    from class_stage_subject_teacher csst, class_info ci, feed_back_stage fbs, feed_back fb
+    where ci.ID = csst.CLASS_ID and csst.CLASS_ID = fbs.CLASS_ID and csst.STAGE_ID = fbs.STAGE_ID
+    and (csst.SUBJECT_ID = fbs.SUBJECT_ID or fbs.SUBJECT_ID = -1) and fb.ID = fbs.FEED_BACK_ID
+    and csst.`STATUS` = 7 and csst.SCORE > 0 and csst.SURVEY_NUM > 0 and csst.REAL_NUM > 0
+  </insert>
+
+</mapper>

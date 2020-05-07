@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dal.db2.mapper.CsstMapper">
+    <sql id="Example_Where_Clause">
+        <!-- WARNING - @mbg.generated -->
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and
+                                    #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem"
+                                             open="(" separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <select id="queryQuitOrderNo" resultType="dal.db2.entity.CsstQuitOrderDto">
+        select
+          CSS.CLASS_ID classId,
+          CSS.STAGE_ID stageId,
+          CSS.SUBJECT_ID subjectId,
+          CSS.BATCH_NUM batchNum,
+          oi.OLD_ORDER_NO oldOrderNo,
+          CSR.OPERATE_TYPE operatorType
+        from CLASS_STAGE_SUBJECT CSS, CLASS_STUDENT_RECORD CSR, ORDER_CLASS_STAGE_SUBJECT OCSS, order_info oi
+        <where>
+            OCSS.ORDER_NO         =   CSR.ORDER_NO
+            and OCSS.ORDER_NO = oi.ORDER_NO
+            AND CSR.OPERATE_TYPE    IN  (2,3)
+            AND OCSS.CLASS_ID					=CSS.CLASS_ID
+            AND OCSS.STAGE_ID					=CSS.STAGE_ID
+            and OCSS.SUBJECT_ID				=CSS.SUBJECT_ID
+            AND OCSS.BATCH_NUM				=CSS.BATCH_NUM
+            AND CSR.CREATE_TIME BETWEEN css.START_DATE   AND css.END_DATE
+            and (css.CLASS_ID, css.STAGE_ID, css.SUBJECT_ID, css.BATCH_NUM) in
+            <foreach collection="collection" item="item" separator="," open="(" close=")">
+                (#{item.classId},#{item.stageId},#{item.subjectId},#{item.batchNum})
+            </foreach>
+        </where>
+    </select>
+
+    <select id="queryTeacherNo" resultType="dal.db2.entity.CsstDto">
+        select
+          CLASS_ID classId,
+          STAGE_ID stageId,
+          SUBJECT_ID subjectId,
+          BATCH_NUM batchNum,
+          TEACHER_STAFF_NO teacherNo
+        from CLASS_STAGE_SUBJECT_TEACHER
+        <where>
+            (CLASS_ID, STAGE_ID, SUBJECT_ID, BATCH_NUM) in
+            <foreach collection="collection" item="item" separator="," open="(" close=")">
+                (#{item.classId},#{item.stageId},#{item.subjectId},#{item.batchNum})
+            </foreach>
+        </where>
+    </select>
+
+    <select id="querySomeOrder" resultType="dal.db2.entity.CsstCount">
+        select
+        distinct tem.class_id classId, tem.stage_id stageId, tem.subject_id subjectId, tem.batch_num batchNum,
+        tem.TEACHER_STAFF_NO teacherNo, tem.old_order_no oldOrderNo
+
+        from
+        (
+        <include refid="mainCsstStudentCount"/>
+        union
+        <include refid="assistentCsstStudentCount"/>
+        ) as tem
+    </select>
+
+    <!-- 主讲csst的在班人数、通过csstId关联查询 -->
+    <sql id="mainCsstStudentCount">
+        select distinct csst.CLASS_ID, csst.STAGE_ID, csst.SUBJECT_ID, csst.BATCH_NUM, csst.TEACHER_STAFF_NO,  oi.old_order_no
+        from class_stage_subject_teacher csst join class_lesson cl on csst.ID = cl.CSST_ID
+        join lesson_student ls on cl.ID = ls.LESSON_ID
+        join order_info oi on ls.order_no = oi.order_no
+        <where>
+            and csst.TEACHER_TYPE = 1
+            and (csst.CLASS_ID, csst.STAGE_ID, csst.SUBJECT_ID, csst.BATCH_NUM, csst.`TEACHER_STAFF_NO`) in
+            <foreach collection="collection" close=")" open="(" item="item" separator=",">
+                (#{item.classId}, #{item.stageId}, #{item.subjectId}, #{item.batchNum}, #{item.teacherNo})
+            </foreach>
+        </where>
+    </sql>
+
+    <!-- 助教csst的在班人数、通过lesson_teacher关联查询,与主讲不同，助教不存在就不会生成csst -->
+    <sql id="assistentCsstStudentCount">
+        select distinct  csst.CLASS_ID, csst.STAGE_ID, csst.SUBJECT_ID, csst.BATCH_NUM, csst.TEACHER_STAFF_NO,  oi.old_order_no
+        from class_stage_subject_teacher csst left join lesson_teacher lt on csst.ID = lt.CSST_ID
+        join class_lesson cl on lt.LESSON_ID = cl.ID
+        join lesson_student ls on cl.ID = ls.LESSON_ID
+        join order_info oi on ls.order_no = oi.order_no
+        <where>
+            and csst.TEACHER_TYPE = 2
+            and (csst.CLASS_ID, csst.STAGE_ID, csst.SUBJECT_ID, csst.BATCH_NUM, csst.`TEACHER_STAFF_NO`) in
+            <foreach collection="collection" close=")" open="(" item="item" separator=",">
+                (#{item.classId}, #{item.stageId}, #{item.subjectId}, #{item.batchNum}, #{item.teacherNo})
+            </foreach>
+        </where>
+    </sql>
+
+    <select id="queryTeacherNoByCssbId" resultType="string">
+        select distinct TEACHER_STAFF_NO from CLASS_STAGE_SUBJECT_TEACHER
+        <where>
+            CLASS_ID = #{classId}
+            and STAGE_ID = #{stageId}
+            and SUBJECT_ID = #{subjectId}
+            and BATCH_NUM = #{batchNum}
+        </where>
+    </select>
+
+    <select id="queryOrderTeacherList" resultType="dal.db2.entity.OrderTeacherDto">
+        select
+          oi.order_no orderNo,
+          lt.TEACHER_STAFF_NO teacherNo,
+          oi.OLD_ORDER_NO oldOrderNo,
+          oi.ORDER_GOODS_ID orderGoodsId
+        from order_info oi left join lesson_student ls on oi.order_no = ls.order_no
+        join lesson_teacher lt on ls.lesson_id = lt.lesson_id
+        <where>
+            oi.order_no in
+            <foreach collection="collection" item="item" separator="," close=")" open="(">
+                #{item}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="queryOrderList" resultType="dal.db2.entity.OrderNoDto">
+        select
+          old_order_no oldOrderNo,
+          order_no orderNo,
+          student_name studentName;
+        from order_info
+        <where>
+            old_order_no in
+            <foreach collection="collection" item="item" separator="," close=")" open="(">
+                #{item}
+            </foreach>
+        </where>
+    </select>
+
+</mapper>

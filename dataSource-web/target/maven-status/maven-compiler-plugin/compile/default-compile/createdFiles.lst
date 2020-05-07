@@ -1,0 +1,6 @@
+web/controller/GoodsController.class
+web/config/SecondDataSourceConfig.class
+web/dto/Result.class
+web/WebApplication.class
+web/dto/ResultUtils.class
+web/config/FirstDataSourceConfig.class

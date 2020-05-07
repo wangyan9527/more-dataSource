@@ -68,7 +68,7 @@
         <result column="user_name" jdbcType="VARCHAR" property="userName"/>
     </resultMap>
     <select id="queryOrderListByUserName" resultMap="goodsOrderResultMap">
-        select * from db1.goods g,db2.order o
+        select * from db1.goods g,db3.order o
         <where>
             g.id=o.goods_id
             <if test="_parameter != null and _parameter != ''">

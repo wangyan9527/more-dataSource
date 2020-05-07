@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dal.db2.mapper.feedback.FeedbackMapper">
+    <resultMap id="BaseResultMap" type="entity.feedback.Feedback">
+        <!-- WARNING - @mbg.generated -->
+        <id column="ID" jdbcType="BIGINT" property="id" />
+        <result column="FEEDBACK_NO" jdbcType="VARCHAR" property="feedbackNo" />
+        <result column="CLASS_ID" jdbcType="BIGINT" property="classId" />
+        <result column="STATUS" jdbcType="TINYINT" property="status" />
+        <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+        <result column="STUDENT_SUGGESTION" jdbcType="VARCHAR"
+                property="studentSuggestion" />
+        <result column="QUIT_REASON" jdbcType="VARCHAR" property="quitReason" />
+        <result column="EFFCT_DESC" jdbcType="VARCHAR" property="effctDesc" />
+        <result column="SUBSCHOOL_SUGGEST" jdbcType="VARCHAR" property="subschoolSuggest" />
+        <result column="TEACH_AGAIN_SUGGESTION" jdbcType="VARCHAR"
+                property="teachAgainSuggestion" />
+        <result column="TITLE" jdbcType="VARCHAR" property="title" />
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="FEEDBACK_TIME" jdbcType="TIMESTAMP" property="feedbackTime" />
+        <result column="CREATOR_ID" jdbcType="BIGINT" property="creatorId" />
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs"
+               type="entity.feedback.Feedback">
+        <!-- WARNING - @mbg.generated -->
+        <result column="SNAPSHOT" jdbcType="LONGVARCHAR" property="snapshot" />
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <!-- WARNING - @mbg.generated -->
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and
+                                    #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem"
+                                             open="(" separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        <!-- WARNING - @mbg.generated -->
+        ID, FEEDBACK_NO, CLASS_ID, `STATUS`,  REMARK,
+        STUDENT_SUGGESTION, QUIT_REASON,
+        EFFCT_DESC, SUBSCHOOL_SUGGEST, TEACH_AGAIN_SUGGESTION, TITLE, CREATE_TIME,
+        UPDATE_TIME,
+        FEEDBACK_TIME, CREATOR_ID, SNAPSHOT
+    </sql>
+    <sql id="Blob_Column_List">
+        <!-- WARNING - @mbg.generated -->
+        SNAPSHOT
+    </sql>
+
+    <select id="queryById" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from feed_back
+        <where>
+            ID = #{id}
+        </where>
+    </select>
+
+    <select id="queryListByStartAndEndId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from feed_back
+        <where>
+            ID between #{startId} and #{endId}
+        </where>
+    </select>
+
+    <select id="queryClassFeedbackListById" resultType="dal.db2.entity.ClassFeedBackDto">
+        select fbs.FEED_BACK_ID feedBackId,
+              ci.ID classId,
+              ci.CLASS_NO classNo,
+              ci.CLASS_NAME className,
+              ci.BU_ID buId,
+              ci.BRANCH_ID branchId,
+              fbs.STAGE_ID stageId,
+              fbs.SUBJECT_ID subjectId,
+              fbs.BATCH_NUM batchNum
+        from feed_back_stage fbs, class_info ci
+        <where>
+            fbs.CLASS_ID = ci.ID
+            and fbs.FEED_BACK_ID in
+            <foreach collection="collection" close=")" open="(" separator="," item="item">
+                #{item}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="querySomeFeedBack" resultType="entity.feedback.FeedBackClass">
+        select fb.ID id,
+        fb.FEEDBACK_NO feedbackNo,
+        fbs.CLASS_ID classId,
+        ci.CLASS_NO classNo,
+        ci.CLASS_NAME className,
+        ci.BU_ID buid,
+        ci.EXAM_TYPE examType,
+        ci.BRANCH_ID branchId,
+        ci.SUBSECTORS_ID subsectorsId,
+        fbs.STAGE_ID stageId,
+        fbs.SUBJECT_ID subjectId,
+        fbs.BATCH_NUM batchNum,
+        fb.SNAPSHOT snapshot
+        from FEED_BACK fb, CLASS_INFO ci, FEED_BACK_STAGE fbs
+        <where>
+            fb.CLASS_ID = ci.ID
+            and fb.ID = fbs.FEED_BACK_ID
+            and fb.ID between #{startId} and #{endId}
+            and ci.BEGIN_TIME BETWEEN '2019-10-01 00:00:00' and '2020-01-01 00:00:00'
+            and fb.STATUS = 7
+        </where>
+    </select>
+
+    <select id="queryFeedbackList" resultType="dal.db2.entity.ClassTeacherFeedbackDto">
+        select temp.* from
+        (
+        <include refid="doubleTeacherFeedback"/>
+        union all
+        <include refid="face2faceFeedback"/>) temp
+    </select>
+
+    <sql id="doubleTeacherFeedback">
+        select
+        csst.ID csstId,
+        fbdt.FEEDBACK_NO feedbackNo,
+        csst.CLASS_ID classId,
+        ci.CLASS_NO classNo,
+        csst.TEACHER_STAFF_NO teacherStaffNo,
+        csst.TEACHER_TYPE teacherType,
+        csst.STAGE_ID stageId,
+        csst.SUBJECT_ID subjectId,
+        csst.BATCH_NUM batchNum,
+        ci.BRANCH_ID branchId,
+        ci.SUBSECTORS_ID subsectorsId,
+        ci.COURSE_TYPE courseType,
+        ci.BU_ID buId,
+        ltf.SCORE_NUM surveyNum,
+        ltf.REAL_NUM realNum,
+        ci.EXAM_WAY examWay,
+        ci.EXAM_TYPE examType,
+        ltf.SCORE score,
+        csst.START_DATE lessonDate,
+        fbdt.SNAPSHOT snapshot
+        from class_stage_subject_teacher csst, class_info ci, lesson_table_feedback ltf, feed_back_double_teacher fbdt
+        <where>
+            csst.CLASS_ID = ci.ID
+            and csst.LESSON_TABLE_ID = fbdt.LESSON_TABLE_ID
+            and csst.LESSON_TABLE_ID = ltf.LESSON_TABLE_ID
+            and csst.TEACHER_STAFF_NO = ltf.TEACHER_NO
+            and csst.TEACHER_STAFF_NO &lt;&gt; ''
+            and fbdt.STATUS = 7
+            and csst.ID between #{startId} and #{endId}
+            and csst.STATUS = 7
+            and csst.TEACH_WAY = 4 and csst.TEACHER_TYPE = 1
+        </where>
+    </sql>
+
+    <sql id="face2faceFeedback">
+        select
+        csst.ID csstId,
+        fb.FEEDBACK_NO feedbackNo,
+        csst.CLASS_ID classId,
+        ci.CLASS_NO classNo,
+        csst.TEACHER_STAFF_NO teacherStaffNo,
+        csst.TEACHER_TYPE teacherType,
+        csst.STAGE_ID stageId,
+        csst.SUBJECT_ID subjectId,
+        csst.BATCH_NUM batchNum,
+        ci.BRANCH_ID branchId,
+        ci.SUBSECTORS_ID subsectorsId,
+        ci.COURSE_TYPE courseType,
+        ci.BU_ID buId,
+        csst.SURVEY_NUM surveyNum,
+        csst.REAL_NUM realNum,
+        ci.EXAM_WAY examWay,
+        ci.EXAM_TYPE examType,
+        csst.SCORE score,
+        csst.START_DATE lessonDate,
+        fb.SNAPSHOT snapshot
+        from class_stage_subject_teacher csst, class_info ci, feed_back_stage fbs, feed_back fb
+        <where>
+            csst.CLASS_ID = ci.ID
+            and csst.CLASS_ID = fbs.CLASS_ID
+            and csst.STAGE_ID = fbs.STAGE_ID
+            and (csst.SUBJECT_ID = fbs.SUBJECT_ID or fbs.SUBJECT_ID = -1)
+            and csst.BATCH_NUM = fbs.BATCH_NUM
+            and csst.TEACHER_STAFF_NO &lt;&gt; ''
+            and fb.ID = fbs.FEED_BACK_ID
+            and fb.STATUS = 7
+            and csst.ID between #{startId} and #{endId}
+            and csst.STATUS = 7
+            and ((csst.TEACH_WAY = 4 and csst.TEACHER_TYPE = 2) or csst.TEACH_WAY <![CDATA[ <> ]]> 4)
+        </where>
+    </sql>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>
